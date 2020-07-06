@@ -1,3 +1,3 @@
 # owfmodules.mci.read
 
-Read Memory-Card content through MCI interface.
+Read Memory Card contents through MCI interface.

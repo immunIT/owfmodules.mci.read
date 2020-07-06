@@ -10,7 +10,7 @@ __license__ = "Apache 2.0"
 __version__ = "1.0.0"
 __contact__ = "Jordan Ovrè / Ghecko <jovre@immunit.ch>, Paul Duncan / Eresse <pduncan@immunit.ch>"
 
-description = 'Read Memory-Card content through MCI interface'
+description = 'Read Memory Card contents through MCI interface'
 name = 'owfmodules.mci.read'
 
 setup(
