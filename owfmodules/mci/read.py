@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+
+# Octowire Framework
+# Copyright (c) ImmunIT - Jordan Ovrè / Paul Duncan
+# License: Apache 2.0
+# Paul Duncan / Eresse <pduncan@immunit.ch>
+# Jordan Ovrè / Ghecko <jovre@immunit.ch>
+
 from tqdm import tqdm
 
 from octowire_framework.module.AModule import AModule
@@ -42,11 +50,9 @@ class Read(AModule):
     def read(self, mci_interface, start_off, start_blk, blk_count, size):
         self.logger.handle("Reading the contents of the Memory Card...", self.logger.INFO)
         with open(self.options["dumpfile"]["Value"], "wb") as f:
-            for blk in tqdm(range(0, blk_count), desc="Reading", unit='B', unit_scale=True,
-                                        unit_divisor=1000, ascii=" #",
-                                        bar_format="{desc} : {percentage:3.0f}%[{bar}] {n_fmt}/{total_fmt} Blocks "
+            for blk in tqdm(range(0, blk_count), desc="Reading", unit='B', unit_scale=True,  unit_divisor=1000,
+                            ascii=" #", bar_format="{desc} : {percentage:3.0f}%[{bar}] {n_fmt}/{total_fmt} Blocks "
                                                    "(512 bytes) [elapsed: {elapsed} left: {remaining}]"):
-
                 # Determine actual block size (last block may be smaller than others)
                 cs = self.chunk_size
                 if (blk + 1) >= blk_count:
@@ -54,28 +60,12 @@ class Read(AModule):
 
                 # Read and strip data from first chunk up to start offset
                 chunk = mci_interface.receive(cs, start_blk + blk)
+
                 if blk == 0:
                     chunk = chunk[start_off:]
 
                 # Write chunk to file
                 f.write(chunk)
-
-    # def read(self, mci_interface, size, start_block, block_offset):
-    #     self.logger.handle("Reading the contents of the Memory Card...", self.logger.INFO)
-    #     # Read by block of 512 bytes to avoid overloading the computer RAM
-    #     with open(self.options["dumpfile"]["Value"], "wb") as f:
-    #         for block_index in tqdm(range(0, size // self.chunk_size), desc="Reading", unit='B', unit_scale=True,
-    #                                 unit_divisor=1000, ascii=" #",
-    #                                 bar_format="{desc} : {percentage:3.0f}%[{bar}] {n_fmt}/{total_fmt} Blocks "
-    #                                            "(512 bytes) [elapsed: {elapsed} left: {remaining}]"):
-    #             block_number = block_index + start_block
-    #             content = mci_interface.receive(self.chunk_size, block_number)
-    #             # First block case. If start_address is not the index of a block.
-    #             if block_index == 0:
-    #                 f.write(content[block_offset:])
-    #             # Last block case. If the last bytes is not a full block
-    #             elif block_index == size // self.chunk_size:
-    #                 f.write(content[:])
 
     def process(self):
         mci_interface = MCI(serial_instance=self.owf_serial)
@@ -84,7 +74,7 @@ class Read(AModule):
 
         # If size not set, try to detect the MCI interface to retrieve the memory size.
         if size == "":
-            size = self.detect()
+            size = self.detect() * 1024
             if size is None:
                 return
 
@@ -97,16 +87,6 @@ class Read(AModule):
 
         # Read Data
         self.read(mci_interface, start_off, start_blk, blk_count, size)
-
-        # # Memory Cards are block devices - 1 block = 512 bytes
-        # # Calculate start block
-        # start_block = start_address // self.chunk_size
-        # # Calculate start block offset
-        # start_block_offset = start_address % self.chunk_size
-        # # Calculate last block offset
-        #
-        # # Start reading the memory card content
-        # self.read(mci_interface, size, start_block, block_offset)
 
     def run(self):
         """
