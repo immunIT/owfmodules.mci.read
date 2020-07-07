@@ -40,7 +40,6 @@ class Read(AModule):
         detect_module = Detect(owf_config=self.config)
         detect_module.owf_serial = self.owf_serial
         resp = detect_module.run(return_value=True)
-        print(resp)
         if resp['status'] == 0:
             return resp["capacity"]
         else:
