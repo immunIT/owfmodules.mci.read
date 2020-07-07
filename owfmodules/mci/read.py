@@ -19,7 +19,7 @@ class Read(AModule):
         self.meta.update({
             'name': 'MCI read',
             'version': '1.0.0',
-            'description': 'Read Memory Card contents through MCI interface.',
+            'description': 'Read Memory Card contents through MCI interface',
             'author': 'Jordan Ovrè / Ghecko <jovre@immunit.ch>, Paul Duncan / Eresse <pduncan@immunit.ch>'
         })
         self.options = {
